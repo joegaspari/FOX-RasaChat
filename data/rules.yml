@@ -1,0 +1,139 @@
+version: "3.0"
+
+rules:
+
+- rule: When a user says thanks
+  steps: 
+  - intent: thanks
+  - action: utter_welcome
+  - action: utter_furtherHelp
+
+- rule: done
+  steps: 
+    - intent: goodbye
+    - action: utter_goodbye
+    - action: action_chat_restart
+
+- rule: get directions
+  steps:
+    - intent: get_directions
+    - action: utter_direction_type
+
+- rule: ask_name
+  steps: 
+    - intent: user_name
+    - action: utter_nice_2meet
+
+- rule: activate hotel form
+  steps:
+    - intent: hotel_book
+    - action: hotel_form
+    - active_loop: hotel_form
+
+
+- rule: submit hotel form
+  condition:
+  - active_loop: hotel_form
+  steps:
+    - action: hotel_form
+    - active_loop: null
+    - action: action_hotelForm
+
+- rule: whatDoUDo
+  steps: 
+  - intent: what_canU_do
+  - action: utter_functionality
+
+- rule: activate rest form
+  steps:
+    - intent: hotel_restr
+    - action: rest_form
+    - active_loop: rest_form
+
+- rule: submit rest form
+  condition:
+  - active_loop: rest_form
+  steps:
+    - action: rest_form
+    - active_loop: null
+    - action: action_rest_form
+
+- rule: activate get directions1 form
+  steps:
+    - intent: hot_rest
+    - action: direction1_form
+    - active_loop: direction1_form
+
+- rule: submit direction1 form
+  condition:
+  - active_loop: direction1_form
+  steps:
+    - action: direction1_form
+    - active_loop: null
+    - action: action_direction1_form
+
+- rule: activate get directions2 form
+  steps:
+    - intent: new_addy
+    - action: direction2_form
+    - active_loop: direction2_form
+
+- rule: submit direction2 form
+  condition:
+  - active_loop: direction2_form
+  steps:
+    - action: direction2_form
+    - active_loop: null
+    - action: action_direction2_form
+
+
+###############################################################################
+# RULES FOR Flight booking form round trip version
+###############################################################################
+- rule: bookf
+  steps:
+  - intent: flight_book
+  - action: utter_flight_return
+
+- rule: activate flight form1
+  steps:
+  - intent: round_trip
+  - action: flight_form1
+  - active_loop: flight_form1
+
+
+- rule: submit flight form1
+  condition:
+  - active_loop: flight_form1
+  steps:
+    - action: flight_form1
+    - active_loop: null
+    - action: action_flight_form1
+
+
+
+###############################################################################
+# RULES FOR Flight booking form one-way trip version
+###############################################################################
+
+- rule: activate flight form2
+  steps:
+  - intent: one_way
+  - action: flight_form2
+  - active_loop: flight_form2
+
+- rule: submit flight form2
+  condition:
+  - active_loop: flight_form2
+  steps:
+    - action: flight_form2
+    - active_loop: null
+    - action: action_flight_form2
+
+
+
+
+- rule: out-of-scope
+  steps:
+    - intent: out_of_scope
+    - action: utter_out_of_scope

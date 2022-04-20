@@ -1,0 +1,1 @@
+	print( lr['name']+"\n"+lr['latitude']+"\n"+lr['longitude']+"\n"+lr['web_url']+"\n")

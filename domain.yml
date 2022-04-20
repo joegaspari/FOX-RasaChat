@@ -1,0 +1,546 @@
+version: "3.0"
+
+intents:
+  - greet
+  - goodbye
+  - mood_great
+  - mood_bad
+  - affirm
+  - deny
+  - confirm
+  - thanks
+  - bot_name
+  - user_name
+  - what_canU_do
+  - weather
+  - weather_for_loc
+  - inform
+  - out_of_scope
+  - hotel_restr
+  - hotel_book
+  - hot_rest
+  - new_addy
+  - get_directions
+  - flight_book
+  - round_trip
+  - one_way
+
+
+entities:
+  - name
+  - city
+  - date
+  - number
+  - address
+  - cuis
+  - transit
+
+slots:
+  name_set:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: name
+  
+  weather_location:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: city
+
+  hotel_local:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: city
+
+  check_in:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: date
+      conditions:
+      - active_loop: hotel_form
+        requested_slot: check_in
+
+  number_Adults:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+      - active_loop: hotel_form
+        requested_slot: number_Adults
+
+  number_rooms:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+      - active_loop: hotel_form
+        requested_slot: number_rooms
+
+  check_out:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: date
+      conditions:
+      - active_loop: hotel_form
+        requested_slot: check_out
+
+
+# slots we need for resturant and directions, we need to ask the user for the address
+#of the hotel they want to pick from the list, the address will be saved (then geoconverted to get the lat long for the resturant api)
+  hotel_choice:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: address
+
+
+  cuisine:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: cuis
+      conditions:
+      - active_loop: rest_form
+        requested_slot: cuisine
+
+  food_rating:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+      - active_loop: rest_form
+        requested_slot: food_rating
+
+
+  distance:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+      - active_loop: rest_form
+        requested_slot: distance
+
+# We remove the conditions on particular slots due to the fact that we are re-using slots in separate form filling process
+  rest_choice:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: address
+
+  mode_transit:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: transit
+
+  addy1:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: address
+
+  addy2:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: address
+
+  departureC:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: city
+
+  arrivalC:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: city
+
+  departure_date:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: date
+
+  return_date:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: date
+
+forms:
+
+  hotel_form:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - weather_for_loc
+    - bot_name
+    - name
+    - what_canU_do
+    required_slots:
+    - hotel_local
+    - check_in
+    - number_Adults
+    - number_rooms
+    - check_out
+
+  rest_form:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - weather_for_loc
+    - bot_name
+    - name
+    required_slots:
+    - hotel_local
+    - hotel_choice
+    - cuisine
+    - food_rating
+    - distance
+
+  direction1_form:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - weather_for_loc
+    - bot_name
+    - name
+    required_slots: 
+    - hotel_local
+    - hotel_choice
+    - rest_choice
+    - mode_transit
+
+  direction2_form:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - weather_for_loc
+    - bot_name
+    - name
+    required_slots:
+    - hotel_local
+    - addy1
+    - addy2
+    - mode_transit
+
+  flight_form1:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - bot_name
+    - name
+    - what_canU_do
+    - hotel_book
+    - hotel_local
+    - number_Adults
+    - number_rooms
+    required_slots:
+    - departureC
+    - arrivalC
+    - departure_date
+    - return_date
+  
+  flight_form2:
+    ignored_intents:
+    - greet
+    - mood_great
+    - mood_bad
+    - weather
+    - bot_name
+    - name
+    - what_canU_do
+    - hotel_book
+    - hotel_local
+    - number_Adults
+    - number_rooms
+    required_slots:
+    - departureC
+    - arrivalC
+    - departure_date
+
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+  - text: "Howdy! How is it going Humanoid?"
+
+  utter_good_howHelp:
+  - text: "That is good news!! How can I help you out today?"
+  - text: "AMAZING!!! That is what we like to hear!! How can I help you out?"
+
+  utter_bad_tellJoke:
+  - text: "Ugh that's not good, wanna hear a joke to cheer you up?"
+  - text: "NO lets try and cheer you up! Would you like to hear a joke?"
+
+  utter_functionality:
+  - text: I am glad you asked! I am able to help you plan your next vacation! I can find hotels, resturaunts, give directions and check the weather for you! Where do you want to start?
+
+  utter_noProblem:
+  - text: No problemo my friend! 
+  - text: All good, lets not then!
+
+  utter_furtherHelp:
+  - text: Is there anything els I could do for you?
+  - text: Let me know if I can help you with something more!
+
+  utter_welcome:
+  - text: You are welcome!
+  - text: no sweat little bean! I got you!
+  - text: Welcome!
+  - text: Np!
+
+  utter_name:
+  - text: My name is Fox, and I am a travel booking bot!
+  - text: Call me Fox, I am a multifunction travel bot!
+  - text: My name is FOX, like the little animal!! I can help find hotels, resturants and weather information for your next trip!
+
+  utter_askName:
+  - text: What do they call you? 
+  - text: what is your name? 
+  - text: Do you have an identifier human?
+
+  utter_nice_2meet:
+  - text: It is a pleasure to meet you {name_set}
+  - text: Nice to meet you, {name_set}!
+
+###############################################################################
+# Weather api call responses
+###############################################################################
+
+  utter_ask_weather_location:
+  - text: What city?
+  - text: In what city are you curious?
+  - text: I'm gonna need a location here my friend!
+
+  utter_getting_weather:
+  - text: gotcha! okay let me get the weather for {weather_location} ...
+
+###############################################################################
+# Hotel form AND api call responses
+###############################################################################
+
+  utter_ask_hotel_local:
+  - text: Do you have a city in mind?
+  - text: I need a city please!!
+  - text: Gonna need a city to complete our search!
+
+
+  utter_ask_check_in:
+  - text: For which date are you looking to check in? 
+  - text: what day are you needing the hotel for? 
+  - text: Can you give me a day for check in? 
+
+  utter_ask_number_Adults:
+  - text: How many adults are there going to be?
+  - text: Can you tell me how many will be staying?
+  - text: What is the number of adults that will be staying?
+
+  utter_ask_number_rooms:
+  - text: Perfect, so many questions hehe, just a couple more! How many rooms will you need?
+  - text: Amazing, next question, how many rooms are you needing?
+  - text: How many rooms are you needing for your stay?
+  - text: Do you need multiple rooms? Please specify a number of rooms!
+
+  utter_ask_check_out:
+  - text: Lastly, when are you going to be checking out? 
+  - text: can you provide a check out date? 
+  - text: we are going to need a check out date to confirm available hotels! 
+
+###############################################################################
+# resturant form AND api call responses
+###############################################################################
+
+  utter_ask_hotel_choice:
+  - text: Which hotel are you interested in? Provide the address please
+
+  utter_ask_cuisine:
+  - text: What type of cuisines do you like?
+  - text: Ooh what are you craving?
+  - text: What are your favorite cuisines?
+  - text: what cuisine are we thinking friend?
+
+  utter_ask_food_rating:
+  - text: Please specify a rating from 3-5 for the search
+  - text: What is your rating preferance? 3-5
+
+  utter_ask_distance:
+  - text: How far should we search for potential spots?
+    buttons:
+    - title: "Near"
+      payload: '/inform{{ "number" : "2"}}'
+    - title: "Walking Distance"
+      payload: '/inform{{ "number" : "5"}}'
+    - title: "Driving Distance"
+      payload: '/inform{{ "number" : "10"}}'
+
+##########################
+# Directions API
+##########################
+
+  utter_direction_type:
+  - text: Yeah I can definitly get those! are you looking for directions ...
+    buttons:
+    - title: "from hotel to restaurant"
+      payload: '/hot_rest'
+    - title: "search new addresses!"
+      payload: '/new_addy'
+
+######
+# form 1: payload: hot_rest
+######
+  utter_ask_rest_choice:
+  - text: What is the address of the restaurant you wish to get directions too?
+
+######
+# form 2: payload: new_addy
+######
+  utter_ask_addy1:
+  - text: what is the first address
+  - text: what address are you starting at?
+  - text: what's the start address?
+
+  utter_ask_addy2:
+  - text: what is the desination address?
+  - text: what address are you going to?
+  - text: what's the destination addy my friend?
+
+  utter_ask_mode_transit:
+  - text: Are you walking, driving or taking public transit?
+    buttons:
+    - title: "Walking"
+      payload: '/inform{{ "transit" : "walk"}}'
+    - title: "Driving"
+      payload: '/inform{{ "transit" : "drive"}}'
+    - title: "Public Transit"
+      payload: '/inform{{ "transit" : "transit"}}'
+
+  utter_out_of_scope:
+  - text: Sorry, I can't help with that :(
+  - text: Sorry, I dont understand, can you re-word that?
+  - text: gosh I can't help you there friend!! 
+
+  utter_ask_continue:
+  - text: Do you wanna continue with this process?
+
+  utter_goodbye:
+  - text: Goodbye friend
+  - text: bye
+  - text: bye for now
+  - text: catch you later
+  - text: gotta go
+  - text: See you
+############################
+#flight utterances
+#############################
+
+  utter_flight_return:
+  - text: are you looking for a one way or round trip flight?
+  - text: Is this round trip? or one way?
+
+  utter_ask_departureC:
+  - text: where are you looking to fly from?
+  - text: What city are you flying from?
+
+  utter_ask_arrivalC:
+  - text: what city are you wanting to fly to?
+  - text: What's the destination city?
+  - text: what city are you looking to fly to my friend!?
+
+  utter_ask_departure_date:
+  - text: What date do you want to leave on?
+  - text: What is the departure date your looking for?
+
+  utter_ask_return_date:
+  - text: When are you wanting to come home?
+  - text: do you have a date in mind for when you want to fly back?
+  - text: What day do you want to return on?
+
+
+actions: 
+  - utter_flight_return
+  - utter_ask_departureC
+  - utter_ask_arrivalC
+  - utter_ask_departure_date
+  - utter_ask_return_date
+  - utter_greet
+  - utter_good_howHelp
+  - utter_bad_tellJoke
+  - utter_functionality
+  - utter_noProblem
+  - utter_furtherHelp
+  - utter_welcome
+  - utter_name
+  - utter_askName
+  - utter_nice_2meet
+  - utter_ask_weather_location
+  - utter_getting_weather
+  - action_tellJoke
+  - action_get_weather
+  - utter_ask_hotel_local
+  - utter_ask_check_in
+  - utter_ask_number_Adults
+  - utter_ask_number_rooms
+  - utter_ask_check_out
+  - action_hotelForm
+  - utter_ask_hotel_choice
+  - utter_ask_cuisine
+  - utter_ask_food_rating
+  - utter_ask_distance
+  - utter_direction_type
+  - utter_ask_rest_choice
+  - utter_ask_addy1
+  - utter_ask_addy2
+  - utter_ask_mode_transit
+  - utter_out_of_scope
+  - utter_ask_continue
+  - utter_goodbye
+  - action_slot_reset
+  - action_chat_restart
+  - action_rest_form
+  - action_direction1_form
+  - action_direction2_form
+  - action_flight_form1
+  - action_flight_form2
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

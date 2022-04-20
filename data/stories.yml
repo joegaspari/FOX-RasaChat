@@ -1,0 +1,245 @@
+version: "3.0"
+
+stories:
+
+- story: hp-1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_good_howHelp
+
+
+
+- story: hp-2.1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_bad
+  - action: utter_bad_tellJoke
+  - intent: deny
+  - action: utter_noProblem
+  - action: utter_furtherHelp
+
+
+
+- story: hp-2.2
+  steps: 
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_bad
+  - action: utter_bad_tellJoke
+  - intent: affirm
+  - action: action_tellJoke
+  - intent: confirm
+  - action: utter_welcome
+  - action: utter_furtherHelp
+
+
+- story: name1
+  steps:
+  - intent: bot_name
+  - action: utter_name
+  - action: utter_askName
+  - intent: user_name
+    entities:
+    - name: "Joe"
+  - action: utter_nice_2meet
+
+
+- story: name2
+  steps:
+  - intent: bot_name
+  - action: utter_name
+  - action: utter_askName
+  - intent: deny
+  - action: utter_furtherHelp
+
+
+- story: whatDoUDo
+  steps: 
+  - intent: what_canU_do
+  - action: utter_functionality
+
+
+###############################################################################
+# Weather api call stories
+###############################################################################
+
+- story: get_weather
+  steps: 
+    - intent: weather
+    - action: utter_ask_weather_location
+    - intent: inform
+      entities:
+      - weather_loc: "Calgary"
+    - action: action_get_weather
+
+
+- story: get_weather_short
+  steps:
+    - intent: weather_for_loc
+      entities:
+      - weather_loc: "London"
+    - action: action_get_weather
+
+
+###############################################################################
+# Hotel Book api call stories
+###############################################################################
+
+- story: hotelBook_happyP
+  steps:
+    - intent: hotel_book
+    - action: hotel_form
+    - active_loop: hotel_form
+    - active_loop: null
+    - action: action_hotelForm
+ 
+
+- story: hotelBook_happyP1
+  steps:
+    - intent: hotel_book
+    - action: hotel_form
+    - active_loop: hotel_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: affirm
+    - action: hotel_form
+    - active_loop: null
+    - action: action_hotelForm
+
+
+- story: hotelBook_sadP2
+  steps:
+    - intent: hotel_book
+    - action: hotel_form
+    - active_loop: hotel_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: deny
+    - action: utter_furtherHelp
+
+
+###############################################################################
+# Find restaurant stories
+###############################################################################
+
+- story: restBook
+  steps:
+    - intent: hotel_restr
+    - action: rest_form
+    - active_loop: rest_form
+    - active_loop: null
+    - action: action_rest_form
+
+- story: restBook2
+  steps:
+    - intent: hotel_restr
+    - action: rest_form
+    - active_loop: rest_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: affirm
+    - action: rest_form
+    - active_loop: null
+    - action: action_rest_form
+
+
+- story: restBook3
+  steps:
+    - intent: hotel_restr
+    - action: rest_form
+    - active_loop: rest_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: deny
+    - action: utter_furtherHelp
+
+###############################################################################
+# Get Directions stories
+###############################################################################
+
+- story: getDirection1_1
+  steps: 
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: hot_rest
+    - action: direction1_form
+    - active_loop: direction1_form
+    - active_loop: null
+    - action: action_direction1_form
+
+- story: getDirection1_2
+  steps: 
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: hot_rest
+    - action: direction1_form
+    - active_loop: direction1_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: affirm
+    - action: direction1_form
+    - active_loop: null
+    - action: action_direction1_form
+
+- story: getDirection1_3
+  steps: 
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: hot_rest
+    - action: direction1_form
+    - active_loop: direction1_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: deny
+    - action: utter_furtherHelp
+
+################################################
+# Story path 2
+#################################################
+- story: getDirection2_1
+  steps:
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: new_addy
+    - action: direction2_form
+    - active_loop: direction2_form
+    - active_loop: null
+    - action: action_direction2_form
+
+- story: getDirection2_2
+  steps:
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: new_addy
+    - action: direction2_form
+    - active_loop: direction2_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: affirm
+    - action: direction2_form
+    - active_loop: null
+    - action: action_direction2_form
+
+- story: getDirection2_3
+  steps:
+    - intent: get_directions
+    - action: utter_direction_type
+    - intent: new_addy
+    - action: direction2_form
+    - active_loop: direction2_form
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+    - action: utter_ask_continue
+    - intent: deny
+    - action: utter_furtherHelp
+
